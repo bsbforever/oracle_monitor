@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<script src="/static/js/bootstrap.min.js"></script>
+</head>
+<body>
+<style>
+.navigation{text-align:center;font-weight:bold}
+</style>
+<body>
+<div class="navigation">ORACLE监控系统</div>
+</div>
+<ul class="nav nav-pills">
+  <li><a href="/oracle/">首页</a></li>
+  <li><a href="/oracle/scanport">端口测试</a></li>
+  <li class=active><a href="/oracle/oracle_status">数据库状态</a></li>
+  <li><a href="/oracle/oracle_status2">数据库概况</a></li>
+  <li><a href="/oracle/diskspace">磁盘空间</a></li>
+  <li><a href="/oracle/blog">ORACLE日常维护</a></li>
+  <li><a href="/oracle/alert_event">数据库Alert日志异常处理</a></li>
+  <li><a href="/oracle/oracle_command">ORACLE命令</a></li>
+  <li><a href="/oracle/check_graphic">图表</a></li>
+  <li><a href="/admin/">后台</a></li>
+</ul>
+<p><h3>数据库概况------每天零点更新</h3></p>
+<p><h3>当前时间:{{nowtime}}</h3></p>
+<table class="table table-hover">
+<thead>
+<tr>
+    <th>数据库名</th>
+    <th>IP地址</th>
+    <th>Job状态</th>
+    <th>Alert日志状态</th>
+    <th>数据库大小</th>
+    <th>SGA大小</th>
+    <th>表空间状态</th>
+    <th>无效对象数量</th>
+    <th>MV编译错误数量</th>
+</tr>
+</thead>
+<tbody>
+{% for i in result %}
+            <tr>
+                <td>{{i.tnsname|upper}}</td>
+                <td>{{i.ipaddress|upper}}</td>
+                <td>{% if i.jobstatus == "error" %} <div style="color:#F00">{% endif %}{{i.jobstatus|upper}}</td>
+                <td>{% if i.alertstatus == "error" %} <div style="color:#F00">{% endif %}{{i.alertstatus|upper}}</td>
+                <td>{{i.dbsize|upper}}G</td>
+                <td>{{i.sga_size|upper}}M</td>
+                <td>{% if i.tbstatus != "normal" %} <div style="color:#F00">{% endif %}{{i.tbstatus|upper}}</td>
+                <td>{% if i.invalid_object != 0 %} <div style="color:#F00">{% endif %}{{i.invalid_object}}</td>
+                <td>{% if i.mv_compile_state != 0 %} <div style="color:#F00">{% endif %}{{i.mv_compile_state}}</td>
+            </tr>
+{% endfor %}
+</tbody>
+</body>
+</html>

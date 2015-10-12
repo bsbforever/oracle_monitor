@@ -1,0 +1,35 @@
+#coding=utf-8
+#coding=gbk
+from django.core.management.base import BaseCommand
+from oracle.models import oraclelist
+from oracle.models import oraclestatus
+import os
+from oracle.monitor.getoracleinfo import *
+from oracle.monitor.sendmail import *
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        mailcontent=[]
+        ip=oraclelist.objects.all().order_by('tnsname')
+        for i in ip:
+            ipaddress1=i.ipaddress
+            username=i.username
+            password=i.password
+            port=i.port
+            tnsname1=i.tnsname
+            db = cx_Oracle.connect(username+'/'+password+'@'+ipaddress1+':'+port+'/'+tnsname1 ,mode=cx_Oracle.SYSDBA)
+	    cursor = db.cursor()
+	    jobstatus=checkjob(cursor)
+	    alertstatus=checkalert(cursor)
+	    dbsize=getdbsize(cursor)
+	    tbstatus=getspace(cursor)
+	    cursor.close()
+            db.close()
+	    if oraclestatus.objects.filter(tnsname=tnsname1).filter(ipaddress=ipaddress1):
+		status=oraclestatus.objects.filter(tnsname=tnsname1).filter(ipaddress=ipaddress1)
+		status.update(**{'tnsname':tnsname1,'ipaddress':ipaddress1,'jobstatus':jobstatus,'alertstatus':alertstatus,'dbsize':dbsize,'tbstatus':tbstatus})
+	    else:
+		createtnsname=oraclestatus(tnsname=tnsname1,ipaddress=ipaddress1)
+		createtnsname.save()
+		status=oraclestatus.objects.filter(tnsname=tnsname1).filter(ipaddress=ipaddress1)
+                status.update(**{'tnsname':tnsname1,'ipaddress':ipaddress1,'jobstatus':jobstatus,'alertstatus':alertstatus,'dbsize':dbsize,'tbstatus':tbstatus})
+

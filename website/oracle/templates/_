@@ -1,0 +1,51 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% load staticfiles %}
+<link href="/static/css/bootstrap.css" rel="stylesheet">  
+</head>
+<body>
+<style>
+.navigation{text-align:center;font-weight:bold}
+</style>
+<body>
+<div class="navigation">ORACLE监控系统</div>
+<p> 目录 </p>
+<ul>
+  <li><a href="/oracle/scanport">端口测试</a></li>
+  <li><a href="/oracle/oracle_status">数据库状态</a></li>
+  <li><a href="/oracle/blog">ORACLE日常维护</a></li>
+  <li><a href="/oracle/alert_event">数据库Alert日志异常处理</a></li>
+  <li><a href="/oracle/oracle_command">ORACLE命令</a></li>
+  <li><a href="/oracle/highcharts">图表</a></li>
+  <li><a href="/admin/">后台</a></li>
+</ul>
+</div>
+<h3>数据库概况</h3>
+<table border="1">
+<tr>
+    <th>数据库名</th>
+    <th>IP地址</th>
+    <th>监听端口</th>
+    <th>主机名</th>
+    <th>版本</th>
+    <th>字符集版本</th>
+    <th>国家字符集版本</th>
+    <th>日志位置</th>
+<!--   <th>用途</th>    -->
+</tr>
+{% for i in result %}
+            <tr>
+                <td>{{i.tnsname}}</td>
+                <td>{{i.ipaddress}}</td>
+                <td>{{i.port}}</td>
+                <td>{{i.hostname}}</td>
+                <td>{{i.version}}</td>
+                <td>{{i.charset}}</td>
+                <td>{{i.ncharset}}</td>
+                <td>{{i.alertpath}}</td>
+<!--                <td>{{i.content}}</td>   -->
+            </tr>
+{% endfor %}
+</body>
+</html>

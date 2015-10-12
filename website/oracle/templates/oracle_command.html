@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>Just Search,Powered By Ezio</title>
+<script language="Javascript">
+function ck()
+{
+    var input = document.getElementsById("operate");
+    document.getElementById('sql').style.visibility='visible';
+}
+</script>
+</head>
+<body>
+<form action="/oracle/commandresult/" method="get">
+  <p>数据库</p>
+  <p><select id="ipaddress" name="ipaddress">
+  {% for x in result %}
+      <option value ="{{ x.ipaddress}}-{{x.tnsname}}">{{ x.tnsname }} {{x.ipaddress}}</option>
+  {% endfor %}
+     </select></p>
+  <p><select id="operate" onchange="document.getElementById('sql').style.visibility='visible'" name="operate">
+      <option value ='check_datafile_time' selected="selected">检查数据文件创建时间</option>
+      <option value ='check_temp_usage'>检查临时文件使用率</option>
+      <option value ='check_executions'>检查执行次数等于一的语句</option>
+      <option value ='check_unboundsql'>检查未绑定语句</option>
+      <option value ='check_session_count'>检查Session数量</option>
+     </select></p>
+  <p><input id='sql' name='sql' type='text' style="visibility:visible"></p>
+  <input type="submit" value="OK" />
+</form>
+</body>
+</html>

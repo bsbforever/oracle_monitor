@@ -1,0 +1,47 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script src="/static/highcharts/js/jquery.min.js"></script>
+<script src="/static/highcharts/js/highcharts.js"></script>
+<script>
+$(function () {
+    $('#container').highcharts({
+        title: {
+            text: '{{title|safe}}',
+            x: -20 //center
+        },
+        xAxis: {
+            categories: {{categories|safe}}
+        },
+        yAxis: {
+            title: {
+                text: '{{title_y}}'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series:[
+		{% for i in series %}
+		{
+		    name: '{{i.name}}',
+		    data: {{i.data}}
+		    },
+		{% endfor %}
+	        ]		     
+	});
+});			  
+</script>
+</head>
+<body>
+<div id="container" style="min-width:700px;height:400px"></div>
+</body>
+</html>

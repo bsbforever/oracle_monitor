@@ -1,0 +1,64 @@
+import re
+import os
+import time
+import datetime
+import MySQLdb
+def check_topsql_new(starttime,endtime,ipaddress,tnsname,topsql_type):
+    hour=0
+    for i in range(starttime,endtime,3600):
+	hour=hour+1
+    topsql=[]
+    result=[]
+    conn=MySQLdb.connect(host='localhost',user='root',passwd='123456',db='oracle',port=3306)
+    cur=conn.cursor()
+    getsqlid_text='select sql_id from oracle_oracle_'+topsql_type+' where tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time <='+ str(endtime)+' and sql_time >='+str(starttime)+' group by sql_id order by max(buffer_gets) desc limit 50'
+    cur.execute(getsqlid_text)
+    row=cur.fetchall()
+    for i in row:
+    	getnum_text='select count(*) from oracle_oracle_'+topsql_type+' where tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time <='+ str(endtime)+' and sql_time >='+str(starttime)+' and sql_id='+i[0]
+	cur.execute(getnum_text)
+	num=cur.fetchone()
+	count=num[0]
+	if hour==count:
+	    maxtime_text='select * from oracle_oracle_'+topsql_type+' where sql_time=(select max(sql_time) from oracle_oracle_'+topsql_type+' where sql_id=\''+i[0]+'\' and tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time<='+str(endtime)+' and sql_time>='+str(starttime)+') and  sql_id=\''+i[0]+'\' and tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time<='+str(endtime)+' and sql_time>='+str(starttime)
+            mintime_text='select * from oracle_oracle_'+topsql_type+' where sql_time=(select min(sql_time) from oracle_oracle_'+topsql_type+' where sql_id=\''+i[0]+'\' and tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time<='+str(endtime)+' and sql_time>='+str(starttime)+') and  sql_id=\''+i[0]+'\' and tnsname=\''+tnsname+'\' and ipaddress=\''+ipaddress+'\' and sql_time<='+str(endtime)+' and sql_time>='+str(starttime)
+	    cur.execute(maxtime_text)
+	    maxtime=cur.fetchone()
+	    cur.execute(mintime_text)
+	    mintime=cur.fetchone()
+	    sql_id= maxtime[4]
+	    sql_text=maxtime[10]
+	    buffergets=maxtime[5]-mintime[5]
+	    executions=maxtime[6]-mintime[6]
+	    if executions==0:
+		executions='1:0'
+	        buffergets_per_executions=float(buffergets/int(executions.split(':')[0]))
+	        cpu_time=float(((maxtime[7]-mintime[7])/int(executions.split(':')[0]))/1000000)
+	        elapsed_time=float(((maxtime[8]-mintime[8])/int(executions.split(':')[0]))/1000000)
+	    else:
+	        buffergets_per_executions=float(buffergets/executions)
+	        cpu_time=float(((maxtime[7]-mintime[7])/executions)/1000000)
+	        elapsed_time=float(((maxtime[8]-mintime[8])/executions)/1000000)
+	    module=maxtime[9]
+	    topsql.append([sql_id,sql_text,buffergets,executions,buffergets_per_executions,cpu_time,elapsed_time,module])
+    cur.close()
+    conn.close()
+    topsql.sort(key=lambda x:x[2],reverse=True)
+    for n in range(0,10):
+	result.append(topsql[n])
+    return result
+    
+
+if __name__ == '__main__':
+    pass
+
+
+
+
+
+
+
+
+
+
+

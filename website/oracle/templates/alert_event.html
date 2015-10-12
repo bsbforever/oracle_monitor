@@ -1,0 +1,32 @@
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+<style>
+.navigation{text-align:center;font-weight:bold}
+</style>
+<body>
+<div class="navigation">ORACLE监控系统</div>
+<p><a href="/oracle/">返回首页</a></p>
+<p><a href="/oracle/add_event/">添加异常</a></p>
+<h3>Alert日志报错处理</h3>
+<table border="1">
+<tr>
+    <th>数据库名</th>
+    <th>问题</th>
+    <th>解决方法</th>
+    <th>发生时间</th>
+    <th>是否可控</th>
+</tr>
+{% for i in result %}
+            <tr>
+                <td>{{i.oracle_name}}</td>
+                <td>{{i.problem}}</td>
+                <td>{{i.solution}}</td>
+                <td>{{i.issuedate}}</td>
+                <td>{{i.control}}</td>
+            </tr>
+{% endfor %}
+</body>
+</html>

@@ -1,0 +1,62 @@
+#coding=utf-8
+from django.db import models
+from django.utils.safestring import mark_safe
+# Create your models here.
+
+   
+class Mssqllist(models.Model):
+    ipaddress=models.GenericIPAddressField()
+    username=models.CharField(max_length=100)
+    password=models.CharField(max_length=100)
+    port=models.CharField(max_length=50)
+    dbname=models.CharField(max_length=50)
+    content=models.CharField(max_length=100)
+
+
+
+class Blog(models.Model):
+    Name=models.CharField(max_length=100,blank=True)
+    Content=models.TextField()
+    def display_content(self): 
+        return mark_safe(self.Content)
+
+class alertevent(models.Model):
+    oracle_name=models.CharField(max_length=50,blank=True)
+    problem=models.CharField(max_length=1000,blank=True)
+    issuedate=models.CharField(max_length=100,blank=True)
+    createdate=models.DateField(auto_now_add=True,blank=True)
+    content=models.TextField()
+    solution=models.CharField(max_length=1000,blank=True)
+    control=models.CharField(max_length=10,blank=True)
+
+class oraclelist(models.Model):
+    ipaddress=models.GenericIPAddressField(primary_key=True)
+    username=models.CharField(max_length=100)
+    password=models.CharField(max_length=100)
+    port=models.CharField(max_length=50)
+    tnsname=models.CharField(max_length=100)
+    version=models.CharField(max_length=100)
+    charset=models.CharField(max_length=100)
+    ncharset=models.CharField(max_length=100)
+    hostname=models.CharField(max_length=100)
+    alertpath=models.CharField(max_length=300)
+    content=models.CharField(max_length=300)
+    def __unicode__(self):
+        return self.ipaddress
+    class Meta:
+        app_label='oracle'
+
+
+class oraclestatus(models.Model):
+    tnsname=models.CharField(max_length=100)
+    ipaddress=models.GenericIPAddressField()
+    jobstatus=models.CharField(max_length=20)
+    alertstatus=models.CharField(max_length=20)
+    dbsize=models.CharField(max_length=50)
+    tbstatus=models.CharField(max_length=200)
+    invalid_object=models.IntegerField(default=0)
+    mv_compile_state=models.IntegerField(default=0)
+    def __unicode__(self):
+        return self.tnsname
+    class Meta:
+        app_label='oracle'

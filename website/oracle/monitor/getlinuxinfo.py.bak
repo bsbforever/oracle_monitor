@@ -1,0 +1,49 @@
+#!/usr/bin/python
+#coding=utf-8
+import os
+import pxssh
+def getunixspace(ssh):
+	result=[]
+	#ssh.prompt()
+        ssh.sendline('bdf |awk \'{if ($1==$NF){printf $1}else{print $0}}\'')  
+        ssh.prompt()  
+        content=ssh.before
+	result= content.split('\n')[2:-1]
+	if  len(result) !=0:
+	    return result
+	else:
+	    print 'can not find  bdf command'
+def getlinuxspace(ssh):
+	result=[]
+        ssh.sendline('df -h |awk \'{if ($1==$NF){printf $1}else{print $0}}\'')  
+        ssh.prompt()  
+        content=ssh.before
+	result= content.split('\n')[2:-1]
+	if  len(result) !=0:
+	    return result
+	else:
+	    print 'can not find df command'
+if __name__ == '__main__':
+    ipaddress='10.60.14.60'
+    username='root'
+    #password='nstx147)'
+    password='nstx147)'
+    mailcontent=[]
+    try:
+        ssh = pxssh.pxssh()
+        #ssh.login(ipaddress,username,password,original_prompt='[>]', login_timeout=60,auto_prompt_reset=False)
+	ssh.login(ipaddress,username,password,original_prompt='[#>:$]',login_timeout=10)
+	#ssh.sendline('bdf |awk \'{if ($1==$NF){printf $1}else{print $0}}\'')
+        #ssh.prompt()
+        #result=ssh.before
+	result=getunixspace(ssh)
+        ssh.logout()
+	for j in result:
+	    split_value=j.split()
+	    if int(split_value[4][0:-1])>90:
+                result1=split_value[4][0:-1]
+	        mailcontent.append(result1)
+	print mailcontent
+    except Exception, e:  
+        print "pxssh failed on login."
+        print str(e)

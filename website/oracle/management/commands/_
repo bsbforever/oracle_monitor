@@ -1,0 +1,45 @@
+#coding=utf-8
+#coding=gbk
+import datetime
+from django.core.management.base import BaseCommand
+from oracle.models import Mssqllist
+import os
+from oracle.monitor.getmssqlinfo import *
+from oracle.monitor.sendmail import *
+class Command(BaseCommand):
+    def handle(self, *args, **options):
+        mailcontent=[]
+	nowtime=datetime.datetime.now()
+        ip=Mssqllist.objects.all().order_by('dbname')
+        for i in ip:
+	    if i.monitor_type==1:
+		    ipaddress=i.ipaddress
+		    instance=i.instance
+		    username=i.username
+		    password=i.password
+		    port=i.port
+		    dbname=i.dbname
+		    if instance!='MSSQLSERVER':
+		        ipaddress=ipaddress+'\\'+instance
+		    try:
+			conn = pymssql.connect(server=ipaddress,port=port,user=username,password=password,database=dbname,charset="UTF-8")
+		    except Exception , e:
+			content= (i.ipaddress+' is Unreachable,The reason is '+str(e)).strip()
+			mailcontent.append(content)
+			print mailcontent
+		    else:
+			cursor = conn.cursor()
+			result=getfreesize(cursor)
+			backup=checkbackup(cursor)
+			cursor.close()
+			conn.close()
+			if result!='normal':
+			    content='Be carefull, The '+i.dbname+' On '+ i.ipaddress+' Is '+result
+			    mailcontent.append(content)
+			for i in backup:
+			    if int(str(nowtime-i[0]).split(':')[0])>26:
+				content='Be carefull, The backup of'+i.dbname+' On '+ i.ipaddress+' is failed'
+				mailcontent.append(content)
+	if len(mailcontent) != 0:
+	    mailcontent='\n'.join(mailcontent)
+            send_mail(to_list,'MSSQL Database Monitor Status',mailcontent)

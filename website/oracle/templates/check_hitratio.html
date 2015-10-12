@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/highcharts/js/jquery.min.js"></script>
+<script src="/static/highcharts/js/highcharts.js"></script>
+<script type="text/javascript" src="/static/My97DatePicker/WdatePicker.js"></script>
+<script language="Javascript">
+function ck(b)
+{
+    var input = document.getElementsByTagName("input");
+
+    for (var i=0;i<input.length ;i++ )
+    {
+        if(input[i].type=="checkbox")
+            input[i].checked = b;
+    }
+}
+</script>
+</head>
+<body>
+<div class='navigation'><h4>ORACLE监控系统</h4></div>
+<ul class="nav nav-pills">
+  <li><a href="/oracle/">首页</a></li>
+  <li><a href="/oracle/mssql">SQLServer状态</a></li>
+  <li><a href="/oracle/scanport">端口测试</a></li>
+  <li><a href="/oracle/oracle_status">数据库状态</a></li>
+  <li><a href="/oracle/oracle_status2">数据库概况</a></li>
+  <li><a href="/oracle/diskspace">磁盘空间</a></li>
+  <li><a href="/oracle/blog">ORACLE日常维护</a></li>
+  <li><a href="/oracle/alert_event">数据库Alert日志异常处理</a></li>
+  <li><a href="/oracle/oracle_command">ORACLE命令</a></li>
+  <li class=active><a href="/oracle/check_graphic">图表</a></li>
+  <li><a href="/admin/">后台</a></li>
+</ul>
+</div>
+<form action="/oracle/check_hitratio" method="post">{% csrf_token %}
+<p><h3>请选择需要查询的数据库</h3></p>
+<br/>
+{% for i in ip %}
+<label><input type="checkbox" value={{i}} {% if i  in ipaddress_checked %} checked=true {% endif %} name="hitratio"/>{{i}}</label>
+{% endfor %} 
+<p><input type="button" onclick="ck(true)" value="全选"><input type="button" onclick="ck(false)" value="取消全选"></p>
+{{ form.as_p }}
+{{form.errors.as_p}}
+<p><label>开始时间: </label><input id="d11" name ="starttime" value="{{stime}}" type="text" class="Wdate" onFocus="WdatePicker({isShowWeek:true,lang:'zh-cn',dateFmt:'yyyyMMdd HH'})"/></p>
+<p><label>结束时间:</label><input id="d11" name ="endtime"  value="{{etime}}" type="text"  class="Wdate" onFocus="WdatePicker({isShowWeek:true,lang:'zh-cn',dateFmt:'yyyyMMdd HH'})"/></p>
+<p><input type="submit" value="提交" /></p>
+</form>
+</body>
+</html>

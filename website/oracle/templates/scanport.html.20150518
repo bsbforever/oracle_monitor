@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><title>Just Search,Powered By Ezio</title>
+<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+<script src="/static/js/bootstrap.min.js"></script>
+</head>
+<body>
+<ul class="nav nav-pills">
+  <li class=active><a href="/oracle/scanport">端口测试</a></li>
+  <li><a href="/oracle/oracle_status">数据库状态</a></li>
+  <li><a href="/oracle/blog">ORACLE日常维护</a></li>
+  <li><a href="/oracle/alert_event">数据库Alert日志异常处理</a></li>
+  <li><a href="/oracle/oracle_command">ORACLE命令</a></li>
+  <li><a href="/oracle/highcharts">图表</a></li>
+  <li><a href="/admin/">后台</a></li>
+  <li><a href="/oracle/">返回首页</a></li>
+</ul>
+<div style='text-align:center'>Welcome to Scanport Tools</div>
+<p>Please make sure that the destination Host is reached first!</p>
+<p>Please fill all the blanks below</p>
+
+<form class="form-horizontal" role="form" action="/oracle/scanresult/" method="get">
+   <div class="form-group">
+      <label for="ipaddress" class="col-sm-2 control-label">IP地址</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="ipaddress" 
+            placeholder="请输入IP地址">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="startport" class="col-sm-2 control-label">起始端口</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="startport" 
+            placeholder="请输入起始端口">
+      </div>
+   </div>
+   <div class="form-group">
+      <label for="endport" class="col-sm-2 control-label">结束端口</label>
+      <div class="col-sm-10">
+         <input type="text" class="form-control" id="endport" 
+            placeholder="请输入结束端口">
+      </div>
+   </div>
+   <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+         <button type="submit" class="btn btn-default">提交</button>
+      </div>
+   </div>
+</form>
+
+<form action="/oracle/scanresult/" method="get">
+  <p>IP Adress<input type="text" name="ipaddress" /></p>
+  <p>StartPort<input type="text" name="startport" /></p>
+  <p>EndPort    <input type="text" name="endport" /></p>
+  <input type="submit" value="OK" />
+</form>
+</body>
+</html>
